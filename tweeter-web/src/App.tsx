@@ -17,6 +17,7 @@ import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
+import { LoginView, LoginPresenter } from "./presenters/LoginPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoListener(); //useContext(UserInfoContext);
@@ -117,9 +118,30 @@ const UnauthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route
+        path="/login"
+        element={
+          <Login
+            presenterGenerator={function (view: LoginView): LoginPresenter {
+              return new LoginPresenter(view);
+            }}
+          />
+        }
+      />
       <Route path="/register" element={<Register />} />
-      <Route path="*" element={<Login originalUrl={location.pathname} />} />
+      <Route
+        path="*"
+        element={
+          <Login
+            originalUrl={location.pathname}
+            presenterGenerator={function (view: LoginView): LoginPresenter {
+              // this is DEFINITELY not the right presenter, just like this to compile
+              // TODO: refactor an AuthPresenter or something like that and have register and login inherit
+              return new LoginPresenter(view);
+            }}
+          />
+        }
+      />
     </Routes>
   );
 };
