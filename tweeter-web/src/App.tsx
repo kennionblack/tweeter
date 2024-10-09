@@ -18,6 +18,10 @@ import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
 import { LoginView, LoginPresenter } from "./presenters/LoginPresenter";
+import {
+  RegisterView,
+  RegisterPresenter,
+} from "./presenters/RegisterPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoListener(); //useContext(UserInfoContext);
@@ -128,7 +132,18 @@ const UnauthenticatedRoutes = () => {
           />
         }
       />
-      <Route path="/register" element={<Register />} />
+      <Route
+        path="/register"
+        element={
+          <Register
+            presenterGenerator={function (
+              view: RegisterView
+            ): RegisterPresenter {
+              return new RegisterPresenter(view);
+            }}
+          />
+        }
+      />
       <Route
         path="*"
         element={
