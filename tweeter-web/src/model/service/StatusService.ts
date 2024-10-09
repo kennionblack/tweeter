@@ -20,6 +20,7 @@ export class StatusService {
     // TODO: Replace with the result of calling server
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   }
+
   public async loadMoreFeedItems(
     authToken: AuthToken,
     userAlias: string,
