@@ -57,10 +57,4 @@ export class StatusPresenter {
     event.preventDefault();
     this.view.setPost("");
   }
-
-  public checkButtonStatus() {
-    return (
-      !this.view.post.trim() || !this.view.authToken || !this.view.currentUser
-    );
-  }
 }
