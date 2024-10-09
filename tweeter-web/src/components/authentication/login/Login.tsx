@@ -34,17 +34,14 @@ const Login = (props: Props) => {
   };
 
   const doLogin = async () => {
-    presenter.doLogin(updateUser, alias, password, rememberMe);
-    if (!!props.originalUrl) {
-      navigate(props.originalUrl);
-    } else {
-      navigate("/");
-    }
+    presenter.doLogin(alias, password, rememberMe);
   };
 
   const listener: LoginView = {
     displayErrorMessage: displayErrorMessage,
     setIsLoading: setIsLoading,
+    updateUser: updateUser,
+    navigate: navigate,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
