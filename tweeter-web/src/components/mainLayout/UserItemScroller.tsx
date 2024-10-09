@@ -8,6 +8,10 @@ import {
   UserItemPresenter,
   UserItemView,
 } from "../../presenters/UserItemPresenter";
+import {
+  UserNavView,
+  UserNavPresenter,
+} from "../../presenters/UserNavPresenter";
 
 interface Props {
   presenterGenerator: (view: UserItemView) => UserItemPresenter;
@@ -73,7 +77,14 @@ const UserItemScroller = (props: Props) => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <UserItem value={item} />
+            <UserItem
+              value={item}
+              presenterGenerator={function (
+                view: UserNavView
+              ): UserNavPresenter {
+                return new UserNavPresenter(view);
+              }}
+            />
           </div>
         ))}
       </InfiniteScroll>

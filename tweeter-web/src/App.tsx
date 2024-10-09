@@ -150,8 +150,6 @@ const UnauthenticatedRoutes = () => {
           <Login
             originalUrl={location.pathname}
             presenterGenerator={function (view: LoginView): LoginPresenter {
-              // this is DEFINITELY not the right presenter, just like this to compile
-              // TODO: refactor an AuthPresenter or something like that and have register and login inherit
               return new LoginPresenter(view);
             }}
           />

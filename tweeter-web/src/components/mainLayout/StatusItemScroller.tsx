@@ -4,6 +4,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfoListener from "../userInfo/UserInfoHook";
+import {
+  UserNavView,
+  UserNavPresenter,
+} from "../../presenters/UserNavPresenter";
 
 export const PAGE_SIZE = 10;
 
@@ -90,7 +94,14 @@ const StatusItemScroller = (props: Props) => {
             key={index}
             className="row mb-3 mx-0 px-0 border rounded bg-white"
           >
-            <StatusItem status={item} />
+            <StatusItem
+              status={item}
+              presenterGenerator={function (
+                view: UserNavView
+              ): UserNavPresenter {
+                return new UserNavPresenter(view);
+              }}
+            />
           </div>
         ))}
       </InfiniteScroll>

@@ -1,13 +1,32 @@
 import { Status, Type } from "tweeter-shared";
 import { Link } from "react-router-dom";
 import useUserNavListener from "../UserNavigationHook";
+import { useState } from "react";
+import {
+  UserNavPresenter,
+  UserNavView,
+} from "../../presenters/UserNavPresenter";
+import useToastListener from "../toaster/ToastListenerHook";
+import useUserInfoListener from "../userInfo/UserInfoHook";
 
 interface Props {
   status: Status;
+  presenterGenerator: (view: UserNavView) => UserNavPresenter;
 }
 
 const Post = (props: Props) => {
-  const { navigateToUser } = useUserNavListener();
+  const { setDisplayedUser, currentUser, authToken } = useUserInfoListener();
+  const { displayErrorMessage } = useToastListener();
+
+  const listener: UserNavView = {
+    displayErrorMessage: displayErrorMessage,
+    setDisplayedUser: setDisplayedUser,
+    currentUser: currentUser,
+    authToken: authToken,
+  };
+
+  const [presenter] = useState(props.presenterGenerator(listener));
+  const { navigateToUser } = useUserNavListener(presenter);
 
   return (
     <>
