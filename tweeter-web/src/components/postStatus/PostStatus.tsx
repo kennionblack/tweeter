@@ -3,10 +3,13 @@ import { useState } from "react";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoHook";
-import { StatusPresenter, StatusView } from "../../presenters/StatusPresenter";
+import {
+  PostPresenter,
+  StatusView as PostStatusView,
+} from "../../presenters/PostPresenter";
 
 interface Props {
-  presenterGenerator: (view: StatusView) => StatusPresenter;
+  presenterGenerator: (view: PostStatusView) => PostPresenter;
 }
 
 const PostStatus = (props: Props) => {
@@ -17,7 +20,7 @@ const PostStatus = (props: Props) => {
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const listener: StatusView = {
+  const listener: PostStatusView = {
     displayErrorMessage: displayErrorMessage,
     setIsLoading: setIsLoading,
     setPost: setPost,

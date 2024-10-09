@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import AppNavbar from "../appNavbar/AppNavbar";
 import PostStatus from "../postStatus/PostStatus";
 import UserInfo from "../userInfo/UserInfo";
-import { StatusView, StatusPresenter } from "../../presenters/StatusPresenter";
+import { StatusView, PostPresenter } from "../../presenters/PostPresenter";
 
 const MainLayout = () => {
   return (
@@ -20,8 +20,8 @@ const MainLayout = () => {
                 <PostStatus
                   presenterGenerator={function (
                     view: StatusView
-                  ): StatusPresenter {
-                    return new StatusPresenter(view);
+                  ): PostPresenter {
+                    return new PostPresenter(view);
                   }}
                 />
               </div>

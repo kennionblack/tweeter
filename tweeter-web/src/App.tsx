@@ -11,7 +11,6 @@ import Login from "./components/authentication/login/Login";
 import Register from "./components/authentication/register/Register";
 import MainLayout from "./components/mainLayout/MainLayout";
 import Toaster from "./components/toaster/Toaster";
-import { AuthToken, FakeData, Status } from "tweeter-shared";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
@@ -22,6 +21,12 @@ import {
   RegisterView,
   RegisterPresenter,
 } from "./presenters/RegisterPresenter";
+import {
+  StatusItemView,
+  StatusItemPresenter,
+} from "./presenters/StatusItemPresenter";
+import { FeedPresenter } from "./presenters/FeedPresenter";
+import { StoryPresenter } from "./presenters/StoryPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoListener(); //useContext(UserInfoContext);
@@ -45,25 +50,6 @@ const App = () => {
 };
 
 const AuthenticatedRoutes = () => {
-  const loadMoreStoryItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-  const loadMoreFeedItems = async (
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> => {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
-  };
-
   return (
     <Routes>
       <Route element={<MainLayout />}>
@@ -73,8 +59,11 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               key={1}
-              itemType="feed"
-              loadMore={loadMoreFeedItems}
+              presenterGenerator={function (
+                view: StatusItemView
+              ): StatusItemPresenter {
+                return new FeedPresenter(view);
+              }}
             />
           }
         />
@@ -83,8 +72,11 @@ const AuthenticatedRoutes = () => {
           element={
             <StatusItemScroller
               key={2}
-              itemType="story"
-              loadMore={loadMoreStoryItems}
+              presenterGenerator={function (
+                view: StatusItemView
+              ): StatusItemPresenter {
+                return new StoryPresenter(view);
+              }}
             />
           }
         />

@@ -16,7 +16,7 @@ export interface StatusView {
   post: string;
 }
 
-export class StatusPresenter {
+export class PostPresenter {
   private service: StatusService;
   private view: StatusView;
 
