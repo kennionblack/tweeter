@@ -25,7 +25,6 @@ export class PostPresenter {
     this.service = new StatusService();
   }
 
-  // TODO: figure out why site does not register when status exists
   public async submitPost(event: React.MouseEvent) {
     event.preventDefault();
 
