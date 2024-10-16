@@ -81,15 +81,16 @@ export class UserInfoPresenter {
     this.view.setDisplayedUser(this.view.currentUser!);
   }
 
-  public async followDisplayedUser(event: React.MouseEvent): Promise<void> {
+  public async followDisplayedUser(
+    event: React.MouseEvent,
+    user: User
+  ): Promise<void> {
     event.preventDefault();
+    this.view.setDisplayedUser(user);
 
     try {
       this.view.setIsLoading(true);
-      this.view.displayInfoMessage(
-        `Following ${this.view.displayedUser!.name}...`,
-        0
-      );
+      this.view.displayInfoMessage(`Following ${user!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.service.follow(
         this.view.authToken!,
@@ -109,15 +110,16 @@ export class UserInfoPresenter {
     }
   }
 
-  public async unfollowDisplayedUser(event: React.MouseEvent): Promise<void> {
+  public async unfollowDisplayedUser(
+    event: React.MouseEvent,
+    user: User
+  ): Promise<void> {
     event.preventDefault();
+    this.view.setDisplayedUser(user);
 
     try {
       this.view.setIsLoading(true);
-      this.view.displayInfoMessage(
-        `Unfollowing ${this.view.displayedUser!.name}...`,
-        0
-      );
+      this.view.displayInfoMessage(`Unfollowing ${user!.name}...`, 0);
 
       const [followerCount, followeeCount] = await this.service.unfollow(
         this.view.authToken!,

@@ -24,6 +24,8 @@ const UserInfo = (props: Props) => {
   const { currentUser, authToken, displayedUser, setDisplayedUser } =
     useUserInfoListener();
 
+  console.log(`currentUser = `, currentUser, "displayedUser =", displayedUser);
+
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
   }
@@ -98,7 +100,7 @@ const UserInfo = (props: Props) => {
                       type="submit"
                       style={{ width: "6em" }}
                       onClick={(event) =>
-                        presenter.unfollowDisplayedUser(event)
+                        presenter.unfollowDisplayedUser(event, displayedUser)
                       }
                     >
                       {isLoading ? (
@@ -117,7 +119,9 @@ const UserInfo = (props: Props) => {
                       className="btn btn-md btn-primary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) => presenter.followDisplayedUser(event)}
+                      onClick={(event) =>
+                        presenter.followDisplayedUser(event, displayedUser)
+                      }
                     >
                       {isLoading ? (
                         <span

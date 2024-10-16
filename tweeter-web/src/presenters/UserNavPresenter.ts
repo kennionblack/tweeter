@@ -41,7 +41,6 @@ export class UserNavPresenter {
   }
 
   public extractAlias(value: string): string {
-    console.log("Extracting alias...");
     const index = value.indexOf("@");
     return value.substring(index);
   }
