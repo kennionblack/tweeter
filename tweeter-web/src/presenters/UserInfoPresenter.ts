@@ -2,7 +2,7 @@ import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { Presenter, MessageView } from "./Presenter";
 
-export interface UserInfoView<T> extends MessageView {
+export interface UserInfoView extends MessageView {
   setDisplayedUser: (user: User) => void;
   setIsFollower: (isFollower: boolean) => void;
   setFollowerCount: (count: number) => void;
@@ -13,29 +13,21 @@ export interface UserInfoView<T> extends MessageView {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-export class UserInfoPresenter<T, U> extends Presenter<UserInfoView<T>> {
+export class UserInfoPresenter extends Presenter<UserInfoView> {
   private service: UserService;
 
-  public constructor(view: UserInfoView<T>) {
+  public constructor(view: UserInfoView) {
     super(view);
     this.service = new UserService();
   }
 
-  public async setIsFollowerStatus(
-    authToken: AuthToken,
-    currentUser: User,
-    displayedUser: User
-  ) {
+  public async setIsFollowerStatus(authToken: AuthToken, currentUser: User, displayedUser: User) {
     this.doFailureReportingOperation(async () => {
       if (currentUser === displayedUser) {
         this.view.setIsFollower(false);
       } else {
         this.view.setIsFollower(
-          await this.service.getIsFollowerStatus(
-            authToken!,
-            currentUser!,
-            displayedUser!
-          )
+          await this.service.getIsFollowerStatus(authToken!, currentUser!, displayedUser!)
         );
       }
     }, "determine follower status");
@@ -43,17 +35,13 @@ export class UserInfoPresenter<T, U> extends Presenter<UserInfoView<T>> {
 
   public async setNumbFollowees(authToken: AuthToken, displayedUser: User) {
     this.doFailureReportingOperation(async () => {
-      this.view.setFolloweeCount(
-        await this.service.getFolloweeCount(authToken, displayedUser)
-      );
+      this.view.setFolloweeCount(await this.service.getFolloweeCount(authToken, displayedUser));
     }, "get followees count");
   }
 
   public async setNumbFollowers(authToken: AuthToken, displayedUser: User) {
     this.doFailureReportingOperation(async () => {
-      this.view.setFollowerCount(
-        await this.service.getFollowerCount(authToken, displayedUser)
-      );
+      this.view.setFollowerCount(await this.service.getFollowerCount(authToken, displayedUser));
     }, "get followers count");
   }
 
@@ -62,10 +50,7 @@ export class UserInfoPresenter<T, U> extends Presenter<UserInfoView<T>> {
     this.view.setDisplayedUser(this.view.currentUser!);
   }
 
-  public async followDisplayedUser(
-    event: React.MouseEvent,
-    user: User
-  ): Promise<void> {
+  public async followDisplayedUser(event: React.MouseEvent, user: User): Promise<void> {
     event.preventDefault();
     this.view.setDisplayedUser(user);
 
@@ -87,10 +72,7 @@ export class UserInfoPresenter<T, U> extends Presenter<UserInfoView<T>> {
     this.view.setIsLoading(false);
   }
 
-  public async unfollowDisplayedUser(
-    event: React.MouseEvent,
-    user: User
-  ): Promise<void> {
+  public async unfollowDisplayedUser(event: React.MouseEvent, user: User): Promise<void> {
     event.preventDefault();
     this.view.setDisplayedUser(user);
 

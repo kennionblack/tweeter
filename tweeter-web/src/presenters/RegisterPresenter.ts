@@ -3,7 +3,7 @@ import { RegisterService } from "../model/service/RegisterService";
 import { Buffer } from "buffer";
 import { Presenter, View } from "./Presenter";
 
-export interface RegisterView<T> extends View {
+export interface RegisterView extends View {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
   setImageFileExtension: (extension: string) => void;
@@ -17,10 +17,10 @@ export interface RegisterView<T> extends View {
   ) => void;
 }
 
-export class RegisterPresenter<T> extends Presenter<RegisterView<T>> {
+export class RegisterPresenter extends Presenter<RegisterView> {
   private registerService: RegisterService;
 
-  public constructor(view: RegisterView<T>) {
+  public constructor(view: RegisterView) {
     super(view);
     this.registerService = new RegisterService();
   }
@@ -62,13 +62,9 @@ export class RegisterPresenter<T> extends Presenter<RegisterView<T>> {
         const imageStringBase64 = event.target?.result as string;
 
         // Remove unnecessary file metadata from the start of the string.
-        const imageStringBase64BufferContents =
-          imageStringBase64.split("base64,")[1];
+        const imageStringBase64BufferContents = imageStringBase64.split("base64,")[1];
 
-        const bytes: Uint8Array = Buffer.from(
-          imageStringBase64BufferContents,
-          "base64"
-        );
+        const bytes: Uint8Array = Buffer.from(imageStringBase64BufferContents, "base64");
 
         this.view.setImageBytes(bytes);
       };

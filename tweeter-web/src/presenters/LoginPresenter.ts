@@ -2,7 +2,7 @@ import { AuthToken, User } from "tweeter-shared";
 import { LoginService } from "../model/service/LoginService";
 import { Presenter, View } from "./Presenter";
 
-export interface LoginView<T> extends View {
+export interface LoginView extends View {
   updateUser: (
     currentUser: User,
     displayedUser: User | null,
@@ -13,20 +13,15 @@ export interface LoginView<T> extends View {
   navigate: (path: string) => void;
 }
 
-export class LoginPresenter<T> extends Presenter<LoginView<T>> {
+export class LoginPresenter extends Presenter<LoginView> {
   private loginService: LoginService;
 
-  public constructor(view: LoginView<T>) {
+  public constructor(view: LoginView) {
     super(view);
     this.loginService = new LoginService();
   }
 
-  public async doLogin(
-    alias: string,
-    password: string,
-    rememberMe: boolean,
-    originalUrl?: string
-  ) {
+  public async doLogin(alias: string, password: string, rememberMe: boolean, originalUrl?: string) {
     this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
 

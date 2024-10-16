@@ -1,15 +1,13 @@
 import { User } from "tweeter-shared";
-import { PagedItemPresenter, PagedItemView } from "./PagedItemPresenter";
+import { PagedItemPresenter } from "./PagedItemPresenter";
 import { FollowService } from "../model/service/FollowService";
+import { View } from "./Presenter";
 
-/*export interface UserItemView<T> extends View {
+export interface UserItemView extends View {
   addItems: (newItems: User[]) => void;
-}*/
+}
 
-export abstract class UserItemPresenter<T> extends PagedItemPresenter<
-  User,
-  FollowService
-> {
+export abstract class UserItemPresenter extends PagedItemPresenter<User, FollowService> {
   protected createService(): FollowService {
     return new FollowService();
   }
