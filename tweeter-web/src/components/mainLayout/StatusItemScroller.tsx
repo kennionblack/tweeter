@@ -4,14 +4,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfoListener from "../userInfo/UserInfoHook";
-import {
-  UserNavView,
-  UserNavPresenter,
-} from "../../presenters/UserNavPresenter";
-import {
-  StatusItemPresenter,
-  StatusItemView,
-} from "../../presenters/StatusItemPresenter";
+import { UserNavView, UserNavPresenter } from "../../presenters/UserNavPresenter";
+import { StatusItemPresenter, StatusItemView } from "../../presenters/StatusItemPresenter";
 
 export const PAGE_SIZE = 10;
 
@@ -64,7 +58,7 @@ const StatusItemScroller = (props: Props) => {
   };
 
   const loadMoreItems = async () => {
-    presenter.loadMore(authToken!, displayedUser!.alias);
+    presenter.loadMoreItems(authToken!, displayedUser!.alias);
     setChangedDisplayedUser(false);
   };
 
@@ -78,15 +72,10 @@ const StatusItemScroller = (props: Props) => {
         loader={<h4>Loading...</h4>}
       >
         {items.map((item, index) => (
-          <div
-            key={index}
-            className="row mb-3 mx-0 px-0 border rounded bg-white"
-          >
+          <div key={index} className="row mb-3 mx-0 px-0 border rounded bg-white">
             <StatusItem
               status={item}
-              presenterGenerator={function (
-                view: UserNavView
-              ): UserNavPresenter {
+              presenterGenerator={function (view: UserNavView): UserNavPresenter {
                 return new UserNavPresenter(view);
               }}
             />
