@@ -1,6 +1,7 @@
 import { AuthToken, User } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
 import { Presenter, MessageView } from "./Presenter";
+import React from "react";
 
 export interface UserInfoView extends MessageView {
   setDisplayedUser: (user: User) => void;
@@ -51,46 +52,56 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
   }
 
   public async followDisplayedUser(event: React.MouseEvent, user: User): Promise<void> {
-    event.preventDefault();
-    this.view.setDisplayedUser(user);
-
-    this.doFailureReportingOperation(async () => {
-      this.view.setIsLoading(true);
-      this.view.displayInfoMessage(`Following ${user!.name}...`, 0);
-
-      const [followerCount, followeeCount] = await this.service.follow(
-        this.view.authToken!,
-        this.view.displayedUser!
-      );
-
-      this.view.setIsFollower(true);
-      this.view.setFollowerCount(followerCount);
-      this.view.setFolloweeCount(followeeCount);
-    }, "follow user");
-
-    this.view.clearLastInfoMessage();
-    this.view.setIsLoading(false);
+    this.updateFollowState(true, "follow", this.service.follow.bind(this.service), event, user);
   }
 
   public async unfollowDisplayedUser(event: React.MouseEvent, user: User): Promise<void> {
+    this.updateFollowState(
+      false,
+      "unfollow",
+      this.service.unfollow.bind(this.service),
+      event,
+      user
+    );
+  }
+
+  private updateFollowState(
+    isFollower: boolean,
+    followString: string,
+    action: (
+      authToken: AuthToken,
+      user: User
+    ) => Promise<[followerCount: number, followeeCount: number]>,
+    event: React.MouseEvent,
+    user: User
+  ) {
     event.preventDefault();
     this.view.setDisplayedUser(user);
 
     this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
-      this.view.displayInfoMessage(`Unfollowing ${user!.name}...`, 0);
+      this.view.displayInfoMessage(
+        `${this.capitalizeFirstCharacter(followString)}ing ${user!.name}...`,
+        0
+      );
 
-      const [followerCount, followeeCount] = await this.service.unfollow(
+      const [followerCount, followeeCount] = await action(
         this.view.authToken!,
         this.view.displayedUser!
       );
 
-      this.view.setIsFollower(false);
+      this.view.setIsFollower(isFollower);
       this.view.setFollowerCount(followerCount);
       this.view.setFolloweeCount(followeeCount);
-    }, "unfollow user");
 
-    this.view.clearLastInfoMessage();
-    this.view.setIsLoading(false);
+      // TODO: if the error occurs after the info message displays, it will not be cleared
+      this.view.clearLastInfoMessage();
+      this.view.setIsLoading(false);
+    }, `${followString} user`);
+  }
+
+  private capitalizeFirstCharacter(str: string): string {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
   }
 }

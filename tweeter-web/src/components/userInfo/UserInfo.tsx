@@ -3,10 +3,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "./UserInfoHook";
-import {
-  UserInfoPresenter,
-  UserInfoView,
-} from "../../presenters/UserInfoPresenter";
+import { UserInfoPresenter, UserInfoView } from "../../presenters/UserInfoPresenter";
 
 interface Props {
   presenterGenerator: (view: UserInfoView) => UserInfoPresenter;
@@ -18,13 +15,9 @@ const UserInfo = (props: Props) => {
   const [followerCount, setFollowerCount] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
 
-  const { currentUser, authToken, displayedUser, setDisplayedUser } =
-    useUserInfoListener();
-
-  console.log(`currentUser = `, currentUser, "displayedUser =", displayedUser);
+  const { currentUser, authToken, displayedUser, setDisplayedUser } = useUserInfoListener();
 
   if (!displayedUser) {
     setDisplayedUser(currentUser!);
@@ -71,10 +64,7 @@ const UserInfo = (props: Props) => {
               {displayedUser !== currentUser && (
                 <p id="returnToLoggedInUser">
                   Return to{" "}
-                  <Link
-                    to={""}
-                    onClick={(event) => presenter.switchToLoggedInUser(event)}
-                  >
+                  <Link to={""} onClick={(event) => presenter.switchToLoggedInUser(event)}>
                     logged in user
                   </Link>
                 </p>
@@ -99,9 +89,7 @@ const UserInfo = (props: Props) => {
                       className="btn btn-md btn-secondary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) =>
-                        presenter.unfollowDisplayedUser(event, displayedUser)
-                      }
+                      onClick={(event) => presenter.unfollowDisplayedUser(event, displayedUser)}
                     >
                       {isLoading ? (
                         <span
@@ -119,9 +107,7 @@ const UserInfo = (props: Props) => {
                       className="btn btn-md btn-primary me-1"
                       type="submit"
                       style={{ width: "6em" }}
-                      onClick={(event) =>
-                        presenter.followDisplayedUser(event, displayedUser)
-                      }
+                      onClick={(event) => presenter.followDisplayedUser(event, displayedUser)}
                     >
                       {isLoading ? (
                         <span
