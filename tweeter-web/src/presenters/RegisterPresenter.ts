@@ -1,13 +1,13 @@
 import { User, AuthToken } from "tweeter-shared";
 import { RegisterService } from "../model/service/RegisterService";
 import { Buffer } from "buffer";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView<T> extends View {
   setImageUrl: (url: string) => void;
   setImageBytes: (bytes: Uint8Array) => void;
   setImageFileExtension: (extension: string) => void;
   navigate: (path: string) => void;
-  displayErrorMessage: (message: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   updateUser: (
     currentUser: User,
@@ -17,12 +17,11 @@ export interface RegisterView {
   ) => void;
 }
 
-export class RegisterPresenter {
+export class RegisterPresenter<T> extends Presenter<RegisterView<T>> {
   private registerService: RegisterService;
-  private view: RegisterView;
 
-  public constructor(view: RegisterView) {
-    this.view = view;
+  public constructor(view: RegisterView<T>) {
+    super(view);
     this.registerService = new RegisterService();
   }
 
@@ -35,7 +34,7 @@ export class RegisterPresenter {
     imageFileExtension: string,
     rememberMe: boolean
   ) {
-    try {
+    this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
 
       const [user, authToken] = await this.registerService.register(
@@ -49,13 +48,9 @@ export class RegisterPresenter {
 
       this.view.updateUser(user, user, authToken, rememberMe);
       this.view.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this.view.setIsLoading(false);
-    }
+    }, "register user");
+
+    this.view.setIsLoading(false);
   }
 
   public handleImageFile(file: File | undefined) {
