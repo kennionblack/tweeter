@@ -1,4 +1,4 @@
-import { AuthToken, User } from "tweeter-shared";
+import { AuthToken } from "tweeter-shared";
 import { Presenter, View } from "./Presenter";
 
 export const PAGE_SIZE = 10;
@@ -43,8 +43,6 @@ export abstract class PagedItemPresenter<T, U> extends Presenter<PagedItemView<T
     this._lastItem = null;
     this._hasMoreItems = true;
   }
-
-  //public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
 
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
     this.doFailureReportingOperation(async () => {

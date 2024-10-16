@@ -6,13 +6,11 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../authenticationFields/AuthenticationFields";
 import useUserInfoListener from "../../userInfo/UserInfoHook";
-import {
-  RegisterPresenter,
-  RegisterView,
-} from "../../../presenters/RegisterPresenter";
+import { RegisterPresenter } from "../../../presenters/RegisterPresenter";
+import { AuthView } from "../../../presenters/AuthPresenter";
 
 interface Props {
-  presenterGenerator: (view: RegisterView) => RegisterPresenter;
+  presenterGenerator: (view: AuthView) => RegisterPresenter;
 }
 
 const Register = (props: Props) => {
@@ -31,14 +29,7 @@ const Register = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const checkSubmitButtonStatus = (): boolean => {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
-    );
+    return !firstName || !lastName || !alias || !password || !imageUrl || !imageFileExtension;
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
@@ -60,7 +51,7 @@ const Register = (props: Props) => {
     presenter.handleImageFile(file);
   };
 
-  const listener: RegisterView = {
+  const listener: AuthView = {
     displayErrorMessage: displayErrorMessage,
     setIsLoading: setIsLoading,
     setImageUrl: setImageUrl,

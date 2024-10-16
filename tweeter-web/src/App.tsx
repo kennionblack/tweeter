@@ -10,11 +10,12 @@ import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
-import { LoginView, LoginPresenter } from "./presenters/LoginPresenter";
-import { RegisterView, RegisterPresenter } from "./presenters/RegisterPresenter";
+import { LoginPresenter } from "./presenters/LoginPresenter";
+import { RegisterPresenter } from "./presenters/RegisterPresenter";
 import { StatusItemView, StatusItemPresenter } from "./presenters/StatusItemPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
 import { StoryPresenter } from "./presenters/StoryPresenter";
+import { AuthView } from "./presenters/AuthPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfoListener(); //useContext(UserInfoContext);
@@ -94,7 +95,7 @@ const UnauthenticatedRoutes = () => {
         path="/login"
         element={
           <Login
-            presenterGenerator={function (view: LoginView): LoginPresenter {
+            presenterGenerator={function (view: AuthView): LoginPresenter {
               return new LoginPresenter(view);
             }}
           />
@@ -104,7 +105,7 @@ const UnauthenticatedRoutes = () => {
         path="/register"
         element={
           <Register
-            presenterGenerator={function (view: RegisterView): RegisterPresenter {
+            presenterGenerator={function (view: AuthView): RegisterPresenter {
               return new RegisterPresenter(view);
             }}
           />
@@ -115,7 +116,7 @@ const UnauthenticatedRoutes = () => {
         element={
           <Login
             originalUrl={location.pathname}
-            presenterGenerator={function (view: LoginView): LoginPresenter {
+            presenterGenerator={function (view: AuthView): LoginPresenter {
               return new LoginPresenter(view);
             }}
           />
