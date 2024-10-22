@@ -14,27 +14,23 @@ interface Props {
 const AppNavbar = (props: Props) => {
   const location = useLocation();
   const { authToken, clearUser } = useUserInfoListener(); //useContext(UserInfoContext);
-  const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayInfoMessage, displayErrorMessage, clearLastInfoMessage } = useToastListener();
 
   const listener: LogoutView = {
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
     clearUser: clearUser,
-    authToken: authToken,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
 
+  const handleLogout = () => {
+    presenter.logOut(authToken!);
+  };
+
   return (
-    <Navbar
-      collapseOnSelect
-      className="mb-4"
-      expand="md"
-      bg="primary"
-      variant="dark"
-    >
+    <Navbar collapseOnSelect className="mb-4" expand="md" bg="primary" variant="dark">
       <Container>
         <Navbar.Brand>
           <div className="d-flex flex-row">
@@ -66,11 +62,7 @@ const AppNavbar = (props: Props) => {
               <NavLink to="/followers">Followers</NavLink>
             </Nav.Item>
             <Nav.Item>
-              <NavLink
-                id="logout"
-                onClick={presenter.logOut}
-                to={location.pathname}
-              >
+              <NavLink id="logout" onClick={handleLogout} to={location.pathname}>
                 Logout
               </NavLink>
             </Nav.Item>

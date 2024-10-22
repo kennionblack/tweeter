@@ -4,22 +4,30 @@ import { Presenter, MessageView } from "./Presenter";
 
 export interface LogoutView extends MessageView {
   clearUser: () => void;
-  authToken: AuthToken | null;
 }
 
 export class LogoutPresenter extends Presenter<LogoutView> {
-  private service: LoginService;
+  private _loginService: LoginService;
 
   public constructor(view: LogoutView) {
     super(view);
-    this.service = new LoginService();
+    this._loginService = new LoginService();
     this.logOut = this.logOut.bind(this);
   }
-  public async logOut() {
+
+  public get loginService() {
+    return this._loginService;
+  }
+
+  public set loginService(loginService: LoginService) {
+    this._loginService = loginService;
+  }
+
+  public async logOut(authToken: AuthToken) {
     this.view.displayInfoMessage("Logging Out...", 0);
 
     this.doFailureReportingOperation(async () => {
-      await this.service.logout(this.view.authToken!);
+      await this._loginService.logout(authToken);
 
       this.view.clearLastInfoMessage();
       this.view.clearUser();
