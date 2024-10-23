@@ -3,18 +3,14 @@ import { useState } from "react";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoHook";
-import {
-  PostPresenter,
-  StatusView as PostStatusView,
-} from "../../presenters/PostPresenter";
+import { PostPresenter, StatusView as PostStatusView } from "../../presenters/PostPresenter";
 
 interface Props {
   presenterGenerator: (view: PostStatusView) => PostPresenter;
 }
 
 const PostStatus = (props: Props) => {
-  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
-    useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
 
   const { currentUser, authToken } = useUserInfoListener();
   const [post, setPost] = useState("");
@@ -26,9 +22,6 @@ const PostStatus = (props: Props) => {
     setPost: setPost,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
-    currentUser: currentUser,
-    authToken: authToken,
-    post: post,
   };
 
   const [presenter] = useState(props.presenterGenerator(listener));
@@ -59,7 +52,7 @@ const PostStatus = (props: Props) => {
             type="button"
             disabled={checkButtonStatus()}
             style={{ width: "8em" }}
-            onClick={(event) => presenter.submitPost(event)}
+            onClick={(event) => presenter.submitPost(event, currentUser, authToken, post)}
           >
             {isLoading ? (
               <span

@@ -7,7 +7,7 @@ export interface MessageView extends View {
   clearLastInfoMessage: () => void;
 }
 
-export class Presenter<V extends View> {
+export abstract class Presenter<V extends View> {
   private _view: V;
 
   protected constructor(view: V) {
@@ -28,6 +28,7 @@ export class Presenter<V extends View> {
       this.view.displayErrorMessage(
         `Failed to ${operationDescription} because of exception: ${(error as Error).message}`
       );
+      console.error(error);
     }
   }
 }
