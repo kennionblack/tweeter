@@ -1,6 +1,6 @@
 import "./Login.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
@@ -11,7 +11,8 @@ import { AuthView } from "../../../presenters/AuthPresenter";
 
 interface Props {
   originalUrl?: string;
-  presenterGenerator: (view: AuthView) => LoginPresenter;
+  //presenterGenerator: (view: AuthView) => LoginPresenter;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
@@ -35,7 +36,7 @@ const Login = (props: Props) => {
   };
 
   const doLogin = async () => {
-    presenter.doLogin(alias, password, rememberMe);
+    presenter.doLogin(alias, password, rememberMe, props.originalUrl);
   };
 
   const listener: AuthView = {
@@ -45,7 +46,9 @@ const Login = (props: Props) => {
     navigate: navigate,
   };
 
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const presenter = useMemo(() => {
+    return props.presenter || new LoginPresenter(listener);
+  }, [listener]);
 
   const inputFieldGenerator = () => {
     return (

@@ -10,7 +10,6 @@ import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import { FolloweePresenter } from "./presenters/FolloweePresenter";
 import { UserItemView } from "./presenters/UserItemPresenter";
 import { FollowerPresenter } from "./presenters/FollowerPresenter";
-import { LoginPresenter } from "./presenters/LoginPresenter";
 import { RegisterPresenter } from "./presenters/RegisterPresenter";
 import { StatusItemView, StatusItemPresenter } from "./presenters/StatusItemPresenter";
 import { FeedPresenter } from "./presenters/FeedPresenter";
@@ -91,16 +90,7 @@ const UnauthenticatedRoutes = () => {
 
   return (
     <Routes>
-      <Route
-        path="/login"
-        element={
-          <Login
-            presenterGenerator={function (view: AuthView): LoginPresenter {
-              return new LoginPresenter(view);
-            }}
-          />
-        }
-      />
+      <Route path="/login" element={<Login />} />
       <Route
         path="/register"
         element={
@@ -111,17 +101,7 @@ const UnauthenticatedRoutes = () => {
           />
         }
       />
-      <Route
-        path="*"
-        element={
-          <Login
-            originalUrl={location.pathname}
-            presenterGenerator={function (view: AuthView): LoginPresenter {
-              return new LoginPresenter(view);
-            }}
-          />
-        }
-      />
+      <Route path="*" element={<Login originalUrl={location.pathname} />} />
     </Routes>
   );
 };

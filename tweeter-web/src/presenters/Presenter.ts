@@ -28,7 +28,6 @@ export abstract class Presenter<V extends View> {
       this.view.displayErrorMessage(
         `Failed to ${operationDescription} because of exception: ${(error as Error).message}`
       );
-      console.error(error);
     }
   }
 }
