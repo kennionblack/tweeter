@@ -1,12 +1,13 @@
 import "./PostStatus.css";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoHook";
 import { PostPresenter, StatusView as PostStatusView } from "../../presenters/PostPresenter";
 
 interface Props {
-  presenterGenerator: (view: PostStatusView) => PostPresenter;
+  //presenterGenerator: (view: PostStatusView) => PostPresenter;
+  presenter?: PostPresenter;
 }
 
 const PostStatus = (props: Props) => {
@@ -24,9 +25,13 @@ const PostStatus = (props: Props) => {
     clearLastInfoMessage: clearLastInfoMessage,
   };
 
-  const [presenter] = useState(props.presenterGenerator(listener));
+  const presenter = useMemo(() => {
+    return props.presenter || new PostPresenter(listener);
+  }, [listener]);
 
   const checkButtonStatus: () => boolean = () => {
+    console.error(authToken);
+    console.error(currentUser);
     return !post.trim() || !authToken || !currentUser;
   };
 
@@ -37,6 +42,7 @@ const PostStatus = (props: Props) => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label="postContent"
             rows={10}
             placeholder="What's on your mind?"
             value={post}
@@ -48,6 +54,7 @@ const PostStatus = (props: Props) => {
         <div className="form-group">
           <button
             id="postStatusButton"
+            aria-label="postStatusButton"
             className="btn btn-md btn-primary me-1"
             type="button"
             disabled={checkButtonStatus()}
@@ -66,6 +73,7 @@ const PostStatus = (props: Props) => {
           </button>
           <button
             id="clearStatusButton"
+            aria-label="clearStatusButton"
             className="btn btn-md btn-secondary"
             type="button"
             disabled={checkButtonStatus()}

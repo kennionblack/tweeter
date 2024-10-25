@@ -1,4 +1,4 @@
-import { LogoutPresenter, LogoutView } from "tweeter-web/src/presenters/LogoutPresenter";
+import { LogoutPresenter, LogoutView } from "../../src/presenters/LogoutPresenter";
 import { mock, instance, verify, spy, when, capture, anything } from "ts-mockito";
 import { AuthToken } from "tweeter-shared";
 import { LoginService } from "../../src/model/service/LoginService";
