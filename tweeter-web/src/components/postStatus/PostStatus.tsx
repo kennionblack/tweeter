@@ -1,6 +1,5 @@
 import "./PostStatus.css";
 import { useMemo, useState } from "react";
-import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfoListener from "../userInfo/UserInfoHook";
 import { PostPresenter, StatusView as PostStatusView } from "../../presenters/PostPresenter";
@@ -30,8 +29,6 @@ const PostStatus = (props: Props) => {
   }, [listener]);
 
   const checkButtonStatus: () => boolean = () => {
-    console.error(authToken);
-    console.error(currentUser);
     return !post.trim() || !authToken || !currentUser;
   };
 
