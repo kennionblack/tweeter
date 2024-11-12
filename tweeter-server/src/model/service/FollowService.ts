@@ -1,24 +1,38 @@
-import { AuthToken, FakeData, User } from "tweeter-shared";
+import { AuthToken, FakeData, User, UserDto } from "tweeter-shared";
 
 export class FollowService {
   public async loadMoreFollowers(
-    authToken: AuthToken,
+    token: string,
     userAlias: string,
     pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> {
+    lastItem: UserDto | null
+  ): Promise<[UserDto[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    return this.getFakeUserData(lastItem, pageSize, userAlias);
   }
 
   public async loadMoreFollowees(
-    authToken: AuthToken,
+    token: string,
     userAlias: string,
     pageSize: number,
-    lastItem: User | null
-  ): Promise<[User[], boolean]> {
+    lastItem: UserDto | null
+  ): Promise<[UserDto[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    return this.getFakeUserData(lastItem, pageSize, userAlias);
+  }
+
+  private async getFakeUserData(
+    lastItem: UserDto | null,
+    pageSize: number,
+    userAlias: string
+  ): Promise<[UserDto[], boolean]> {
+    const [items, hasMore] = FakeData.instance.getPageOfUsers(
+      User.fromDto(lastItem),
+      pageSize,
+      userAlias
+    );
+    const dtos = items.map((user) => user.dto);
+    return [dtos, hasMore];
   }
 
   public async getUser(authToken: AuthToken, alias: string): Promise<User | null> {

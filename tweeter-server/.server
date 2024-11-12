@@ -1,0 +1,6 @@
+BUCKET='cs340-tweeter-lambda-bucket'
+LAMBDA_ROLE='arn:aws:iam::590184018028:role/tweeter-lambda'
+EDIT_LAMBDALIST='
+tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:590184018028:layer:340TweeterLambdaDependencies:3'

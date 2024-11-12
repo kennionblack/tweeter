@@ -1,6 +1,6 @@
 import { AuthToken, User } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
 import { Presenter, View } from "./Presenter";
+import { FollowService } from "../model/service/FollowService";
 
 export interface UserNavView extends View {
   setDisplayedUser: (user: User) => void;
@@ -8,11 +8,11 @@ export interface UserNavView extends View {
   authToken: AuthToken | null;
 }
 export class UserNavPresenter extends Presenter<UserNavView> {
-  private service: UserService;
+  private service: FollowService;
 
   public constructor(view: UserNavView) {
     super(view);
-    this.service = new UserService();
+    this.service = new FollowService();
     this.navigateToUser = this.navigateToUser.bind(this);
   }
 
