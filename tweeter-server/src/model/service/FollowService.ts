@@ -35,9 +35,14 @@ export class FollowService {
     return [dtos, hasMore];
   }
 
-  public async getUser(authToken: AuthToken, alias: string): Promise<User | null> {
+  public async getUser(token: string, alias: string): Promise<UserDto | null> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.findUserByAlias(alias);
+    let foundUser = FakeData.instance.findUserByAlias(alias);
+    if (foundUser === null) {
+      return null;
+    } else {
+      return foundUser.dto;
+    }
   }
 
   public async unfollow(

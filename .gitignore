@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 /tweeter-server/node_modules
+nodejs.zip
 
 # testing
 /coverage
