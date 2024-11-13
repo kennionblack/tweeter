@@ -1,12 +1,12 @@
 import { LogoutPresenter, LogoutView } from "../../src/presenters/LogoutPresenter";
 import { mock, instance, verify, spy, when, capture, anything } from "ts-mockito";
 import { AuthToken } from "tweeter-shared";
-import { LoginService } from "../../src/model/service/LoginService";
+import { UserService } from "../../src/model/service/UserService";
 
 describe("LogoutPresenter", () => {
   let mockLogoutView: LogoutView;
   let logoutPresenter: LogoutPresenter;
-  let mockLoginService: LoginService;
+  let mockUserService: UserService;
 
   const authToken = new AuthToken("asdf asdf", Date.now());
 
@@ -14,15 +14,15 @@ describe("LogoutPresenter", () => {
     mockLogoutView = mock<LogoutView>();
     const mockLogoutViewInstance = instance(mockLogoutView);
 
-    mockLoginService = mock<LoginService>();
-    const mockLoginServiceInstance = instance(mockLoginService);
+    mockUserService = mock<UserService>();
+    const mockLoginServiceInstance = instance(mockUserService);
 
     logoutPresenter = new LogoutPresenter(mockLogoutViewInstance);
-    logoutPresenter.loginService = mockLoginServiceInstance;
+    logoutPresenter.userService = mockLoginServiceInstance;
     const logoutSpy = spy(logoutPresenter);
     logoutPresenter = instance(logoutSpy);
 
-    when(logoutSpy.loginService).thenReturn(mockLoginServiceInstance);
+    when(logoutSpy.userService).thenReturn(mockLoginServiceInstance);
   });
 
   it("tells the view to display a logging out message", async () => {
@@ -32,9 +32,9 @@ describe("LogoutPresenter", () => {
 
   it("calls logout on the logout service with the correct auth token", async () => {
     await logoutPresenter.logOut(authToken);
-    verify(mockLoginService.logout(authToken)).once();
+    verify(mockUserService.logout(authToken)).once();
 
-    let [capturedAuthToken] = capture(mockLoginService.logout).last();
+    let [capturedAuthToken] = capture(mockUserService.logout).last();
     expect(capturedAuthToken).toEqual(authToken);
   });
 
@@ -48,7 +48,7 @@ describe("LogoutPresenter", () => {
 
   it("displays an error message and does not clear the last info message or clear the user info on unsuccessful logout", async () => {
     const error = new Error("An error occurred");
-    when(mockLoginService.logout(authToken)).thenThrow(error);
+    when(mockUserService.logout(authToken)).thenThrow(error);
 
     await logoutPresenter.logOut(authToken);
 
