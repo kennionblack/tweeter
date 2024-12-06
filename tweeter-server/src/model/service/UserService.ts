@@ -1,21 +1,29 @@
-import { FakeData, UserDto, AuthTokenDto } from "tweeter-shared";
+import { UserDto, AuthTokenDto, User, AuthToken } from "tweeter-shared";
 import { Buffer } from "buffer";
+import bcrypt from "bcryptjs";
+import { UserInfo } from "../UserInfo";
+import { Service } from "./Service";
 
-export class UserService {
+const MAX_SALT_ROUNDS = 3;
+
+export class UserService extends Service {
   public async login(alias: string, password: string): Promise<[UserDto, AuthTokenDto]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid alias or password");
+    let user: UserInfo | User | null = null;
+    const foundUser = await this.userDAO.login(alias);
+    if (await bcrypt.compare(password, foundUser.passwordHash)) {
+      user = foundUser;
+    } else {
+      throw new Error("Bad Request: Invalid alias or password");
     }
 
-    return [user.dto, FakeData.instance.authToken.dto];
+    user = new User(foundUser.firstName, foundUser.lastName, foundUser.alias, foundUser.imageUrl);
+    const token = await this.createToken();
+
+    return [user.dto, token.dto];
   }
 
   public async logout(authToken: AuthTokenDto): Promise<void> {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    await this.authDAO.delete(AuthToken.fromDto(authToken)!);
   }
 
   public async register(
@@ -26,16 +34,34 @@ export class UserService {
     userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
     const imageStringBase64: string = Buffer.from(userImageBytes).toString("base64");
 
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    const hashedPassword = await bcrypt.hash(password, MAX_SALT_ROUNDS);
 
-    if (user === null) {
-      throw new Error("Invalid registration");
+    try {
+      await this.userDAO.put(
+        new UserInfo(
+          alias,
+          firstName,
+          lastName,
+          hashedPassword,
+          imageStringBase64,
+          imageFileExtension
+        )
+      );
+    } catch (error) {
+      throw new Error("Bad Request: Error registering user");
     }
 
-    return [user.dto, FakeData.instance.authToken.dto];
+    const user = new User(firstName, lastName, alias, imageStringBase64);
+    const token = await this.createToken();
+
+    return [user.dto, token.dto];
+  }
+
+  private async createToken(): Promise<AuthToken> {
+    const token = AuthToken.Generate();
+    await this.authDAO.put(token);
+    return token;
   }
 }
