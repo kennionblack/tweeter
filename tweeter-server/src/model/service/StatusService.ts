@@ -1,4 +1,4 @@
-import { Status, StatusDto } from "tweeter-shared";
+import { Status, StatusDto, User } from "tweeter-shared";
 import { Service } from "./Service";
 import { FeedInfo } from "../FeedInfo";
 
@@ -46,7 +46,8 @@ export class StatusService extends Service {
   }
 
   private async convertFeedInfoToStatus(feedInfo: FeedInfo): Promise<Status> {
-    const user = await this.userDAO.getUserByAlias(feedInfo.followerAlias);
+    const userInfo = await this.userDAO.getUserByAlias(feedInfo.followerAlias);
+    const user = new User(userInfo.firstName, userInfo.lastName, userInfo.alias, userInfo.imageUrl);
     return new Status(feedInfo.post, user, feedInfo.timestamp);
   }
 }

@@ -16,6 +16,8 @@ export class UserService extends Service {
       throw new Error("Bad Request: Invalid alias or password");
     }
 
+    user.imageUrl = this.imageDAO.getImageUrl(user.imageFileExtension);
+
     user = new User(foundUser.firstName, foundUser.lastName, foundUser.alias, foundUser.imageUrl);
     const token = await this.createToken();
 
@@ -40,20 +42,15 @@ export class UserService extends Service {
 
     try {
       await this.userDAO.put(
-        new UserInfo(
-          alias,
-          firstName,
-          lastName,
-          hashedPassword,
-          imageStringBase64,
-          imageFileExtension
-        )
+        new UserInfo(alias, firstName, lastName, hashedPassword, "", imageFileExtension)
       );
     } catch (error) {
       throw new Error("Bad Request: Error registering user");
     }
 
-    const user = new User(firstName, lastName, alias, imageStringBase64);
+    const imageUrl = await this.imageDAO.putImage(alias, imageStringBase64);
+
+    const user = new User(firstName, lastName, alias, imageUrl);
     const token = await this.createToken();
 
     return [user.dto, token.dto];

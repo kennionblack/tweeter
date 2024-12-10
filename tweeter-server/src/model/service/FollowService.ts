@@ -1,4 +1,4 @@
-import { UserDto } from "tweeter-shared";
+import { User, UserDto } from "tweeter-shared";
 import { Follow } from "../Follow";
 import { DataPage } from "../DataPage";
 import { Service } from "./Service";
@@ -21,7 +21,7 @@ export class FollowService extends Service {
     );
 
     const hasMore = dataPage.hasMorePages;
-    return [await this.convertDataPageToUserDtos(dataPage), hasMore];
+    return [await this.convertDataPageToUserDtos(dataPage, true), hasMore];
   }
 
   public async loadMoreFollowees(
@@ -39,16 +39,15 @@ export class FollowService extends Service {
     );
 
     const hasMore = dataPage.hasMorePages;
-    return [await this.convertDataPageToUserDtos(dataPage), hasMore];
+    return [await this.convertDataPageToUserDtos(dataPage, false), hasMore];
   }
 
-  private async convertDataPageToUserDtos(dataPage: DataPage<Follow>): Promise<UserDto[]> {
+  private async convertDataPageToUserDtos(
+    dataPage: DataPage<Follow>,
+    isFollower: boolean
+  ): Promise<UserDto[]> {
     const userDtos = await Promise.all(
-      dataPage.values.map(async (item) => {
-        const user = this.followDAO.convertFollowToUser(item);
-        user.imageUrl = await this.imageDAO.getImageByAlias(user.alias);
-        return user.dto;
-      })
+      dataPage.values.map(async (follow) => this.convertFollowToUser(follow, isFollower))
     );
 
     return userDtos;
@@ -63,6 +62,19 @@ export class FollowService extends Service {
     } else {
       return foundUser.dto;
     }
+  }
+
+  async convertFollowToUser(follow: Follow, isFollower: boolean): Promise<UserDto> {
+    let handle: string;
+    if (isFollower) {
+      handle = follow.follower_handle;
+    } else {
+      handle = follow.followee_handle;
+    }
+
+    const userInfo = await this.userDAO.getUserByAlias(handle);
+    let user = new User(userInfo.firstName, userInfo.lastName, userInfo.alias, userInfo.imageUrl);
+    return user.dto;
   }
 
   public async unfollow(
